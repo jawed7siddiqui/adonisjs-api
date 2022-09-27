@@ -1,0 +1,55 @@
+type ProductCategory {
+    id: Int
+    store_id: Int
+    name: String
+    slug: String
+    image: String
+    attributes: [ProductCategoryAttribute]
+    status: STATUS
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input ProductCategoryInput {
+    store_id: Int
+    name: String!
+    slug: String!
+    image: Upload
+    status: STATUS!
+}
+
+type ProductCategoryAttribute {
+    id: Int
+    category_id: Int
+    name: String!
+    status: STATUS!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input ProductCategoryAttributeInput {
+    name: String!
+    status: STATUS!
+}
+
+input ProductCategoryMultipleInput {
+    store_id: Int
+    categories: [String]!
+}
+
+type Query {
+    productCategoryFindAll: [ProductCategory]
+    productCategoryFindAllByStore(store_id: Int): [ProductCategory]
+    productCategoryFindOne(id: Int): ProductCategory
+}
+
+type Mutation {
+    productCategoryCreate (data: ProductCategoryInput!): ProductCategory
+    productCategoryCreateMultiple (data: ProductCategoryMultipleInput!): [ProductCategory]
+    productCategoryUpdate (id: Int, data: ProductCategoryInput!): ProductCategory
+    productCategoryDelete (id: Int): Boolean
+
+    productCategoryAttributeCreate (category_id: Int, data: ProductCategoryAttributeInput!): ProductCategoryAttribute
+    productCategoryAttributeUpdate (id: Int, data: ProductCategoryAttributeInput!): ProductCategoryAttribute
+    productCategoryAttributeDelete (id: Int): Boolean
+}

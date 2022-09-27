@@ -1,0 +1,87 @@
+type Order {
+    id: Int
+    store_id: Int
+    user_id: Int
+    initial_price: Float
+    delivery_fee: Float
+    total_price: Float
+    shipping_address: String
+    billing_address: String
+    items: [OrderItem]
+    status: String
+    total_order: Int
+    total_pending_order: Int
+    total_processing_order: Int
+    total_shipped_order: Int
+    total_completed_order: Int
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input OrderInput {
+    store_id: Int!
+    user_id: Int!
+    product_id: Int!
+    quantity: Int!
+    delivery_fee: Float
+    shipping_address: String
+    billing_address: String
+}
+
+input OrderGuestInput {
+    store_id: Int!
+    name: String
+    phone: String
+    email: String!
+    username: String
+    password: String!
+    address: String
+    product_id: Int!
+    quantity: Int!
+    delivery_fee: Float
+    shipping_address: String
+    billing_address: String
+}
+
+type OrderItem {
+    id: Int
+    order_id: Int
+    product_id: Int
+    quantity: Int
+    price: Float
+    total_price: Float
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+# input OrderItemInput {
+#     product_id: Int
+#     quantity: Int!
+# }
+
+enum ORDER_STATUS {
+    Pending
+    Processing
+    Shipped
+    Completed
+    Returned
+    Cancelled
+}
+
+type Query {
+    orderFindAll: [Order]
+    orderFindAllByStore(store_id: Int): [Order]
+    orderFindOne(id: Int): Order
+    orderFilter(from_date: String!, to_date: String!): [Order]
+}
+
+type Mutation {
+    orderCreate (data: OrderInput!): Order
+    createOrderAsGuest (data: OrderGuestInput!): Order
+    orderUpdate (id: Int, data: OrderInput!): Order
+    orderStatusUpdate (id: Int, status: ORDER_STATUS!): Order
+    orderDelete (id: Int): Boolean
+
+    # orderItemUpdateOrCreate (order_id: Int, data: OrderItemInput!): OrderItem
+    # orderItemDelete (id: Int): Boolean
+}

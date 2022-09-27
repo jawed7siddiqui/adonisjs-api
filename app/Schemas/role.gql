@@ -1,0 +1,11 @@
+type Role {
+    id: Int
+    name: String
+    status: STATUS
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type Query {
+    roleFindAll: [Role]
+}

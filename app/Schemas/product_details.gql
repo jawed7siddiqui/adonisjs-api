@@ -1,0 +1,32 @@
+type ProductDetails {
+    id: Int
+    sku: String
+    name: String
+    price: Float
+    discount: Float
+    offerEnd: String
+    new: Boolean
+    rating: Int
+    saleCount: Int
+    category: [String]
+    tag: [String]
+    variation: [ProductVariation]
+    image: [String]
+    shortDescription: String
+    fullDescription: String
+}
+
+type ProductVariation {
+    color: String
+    image: String
+    size: [ProductVariationSize]
+}
+
+type ProductVariationSize {
+    name: String
+    stock: String
+}
+
+type Query {
+    productDetails(id: Int): ProductDetails
+}
