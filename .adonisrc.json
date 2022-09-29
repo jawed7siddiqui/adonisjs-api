@@ -31,6 +31,8 @@
     "@adonisjs/ally"
   ],
   "metaFiles": [
+    ".env",
+    ".adonisrc.json",
     {
       "pattern": "public/**",
       "reloadServer": false

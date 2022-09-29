@@ -164,18 +164,19 @@ const resolvers = {
                 return (new GQLService()).error(404);
             }
 
-            let attribute = await ProductCategoryAttribute.query()
-                .where({'category_id': product.category_id, 'name': data.name})
-                .first();
+            // let attribute = await ProductCategoryAttribute.query()
+            //     .where({'category_id': product.category_id, 'name': data.name})
+            //     .first();
 
-            if (! attribute) {
-                return (new GQLService()).error(404, `The ${data.name} attribute not available.`);
-            }
+            // if (! attribute) {
+            //     return (new GQLService()).error(404, `The ${data.name} attribute not available.`);
+            // }
 
             await ProductAttribute.updateOrCreate({
                 product_id: product.id,
-                attribute_id: attribute.id,
-            }, {value: data.value});
+                name: data.name,
+                value: data.value,
+            },{});
 
             return (new PersistService()).productAttribute(product_id);
         },

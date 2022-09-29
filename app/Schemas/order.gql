@@ -14,6 +14,8 @@ type Order {
     total_processing_order: Int
     total_shipped_order: Int
     total_completed_order: Int
+    customer_name: String
+    email: String
     created_at: DateTime
     updated_at: DateTime
 }
@@ -21,8 +23,7 @@ type Order {
 input OrderInput {
     store_id: Int!
     user_id: Int!
-    product_id: Int!
-    quantity: Int!
+    products: [CartItem]
     delivery_fee: Float
     shipping_address: String
     billing_address: String
@@ -36,11 +37,15 @@ input OrderGuestInput {
     username: String
     password: String!
     address: String
-    product_id: Int!
-    quantity: Int!
+    products: [CartItem]
     delivery_fee: Float
     shipping_address: String
     billing_address: String
+}
+
+input CartItem {
+    product_id: Int!
+    quantity: Int!
 }
 
 type OrderItem {
@@ -71,6 +76,7 @@ enum ORDER_STATUS {
 type Query {
     orderFindAll: [Order]
     orderFindAllByStore(store_id: Int): [Order]
+    orderFindAllByUser(user_id: Int): [Order]
     orderFindOne(id: Int): Order
     orderFilter(from_date: String!, to_date: String!): [Order]
 }

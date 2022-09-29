@@ -145,7 +145,7 @@ export default class PersistService {
                     id: productAttribute?.id ?? null,
                     product_id: productAttribute?.product_id ?? null,
                     attribute_id: productAttribute?.attribute_id ?? null,
-                    name: productAttribute?.attribute?.name ?? null,
+                    name: productAttribute?.name ?? null,
                     value: productAttribute?.value ?? null,
                     created_at: productAttribute?.createdAt?.toString(),
                     updated_at: productAttribute?.updatedAt?.toString(),

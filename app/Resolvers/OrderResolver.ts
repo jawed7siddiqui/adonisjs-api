@@ -78,8 +78,23 @@ const resolvers = {
             return orders.map(async (order) => {
                 let orderData = await (new PersistService()).order(order);
 
-                return {...orderData, ...counters}
+                const user = await User.find(orderData.user_id);
+
+                const userData = {
+                    customer_name: user?.name,
+                    email: user?.email,
+                };
+
+                return {...orderData, ...counters, ...userData}
             });
+        },
+
+        async orderFindAllByUser(_, {user_id}, {ctx}) {
+            await (new APIAuthService()).authenticate(ctx);
+
+            const orders = await Order.query().where('user_id', user_id);
+
+            return orders.map((order) => (new PersistService()).order(order));
         },
 
         async orderFilter(_, {from_date, to_date}, {ctx}) {
@@ -115,18 +130,25 @@ const resolvers = {
                 return (new GQLService()).error(404, 'Store not found.');
             }
 
-            let orderItemData = {product_id: data.product_id, quantity: data.quantity};
+            let cartItems = data?.products ?? [];
 
-            delete data.product_id;
-            delete data.quantity;
+            delete data.products;
 
             let order = await Order.create({...data, ...{uid: Date.now(), status: 'Pending'}});
 
-            await orderItemUpdateOrCreateHandler(order.id, orderItemData);
+            let cartStore = async () => {
+                return Promise.all(
+                    cartItems.map(async (cartItem: any) => {
+                        return await orderItemUpdateOrCreateHandler(order.id, cartItem);
+                    })
+                );
+            }
 
-            let orderModel = await Order.find(order.id);
+            return cartStore().then(async () => {
+                let orderModel = await Order.find(order.id);
 
-            return await (new PersistService()).order(orderModel);
+                return await (new PersistService()).order(orderModel);
+            });
         },
 
         async createOrderAsGuest(_, {data}, {}) {
@@ -162,11 +184,21 @@ const resolvers = {
                 status: 'Pending',
             });
 
-            await orderItemUpdateOrCreateHandler(order.id, {product_id: data.product_id, quantity: data.quantity});
+            let cartItems = data?.products ?? [];
 
-            let orderModel = await Order.find(order.id);
+            let cartStore = async () => {
+                return Promise.all(
+                    cartItems.map(async (cartItem: any) => {
+                        return await orderItemUpdateOrCreateHandler(order.id, cartItem);
+                    })
+                );
+            }
 
-            return await (new PersistService()).order(orderModel);
+            return cartStore().then(async () => {
+                let orderModel = await Order.find(order.id);
+
+                return await (new PersistService()).order(orderModel);
+            });
         },
 
         async orderUpdate(_, {id, data}, {}) {
@@ -182,20 +214,27 @@ const resolvers = {
                 return (new GQLService()).error(404, 'Store not found.');
             }
 
-            let orderItemData = {product_id: data.product_id, quantity: data.quantity};
+            let cartItems = data?.products ?? [];
 
-            delete data.product_id;
-            delete data.quantity;
+            delete data.products;
 
             await order.merge({...data, ...{total_price: order.initial_price - order.delivery_fee}}).save();
 
             order = await Order.find(id);
 
-            await orderItemUpdateOrCreateHandler(id, orderItemData);
+            let cartStore = async () => {
+                return Promise.all(
+                    cartItems.map(async (cartItem: any) => {
+                        return await orderItemUpdateOrCreateHandler(id, cartItem);
+                    })
+                );
+            }
 
-            let orderModel = await Order.find(id);
+            return cartStore().then(async () => {
+                let orderModel = await Order.find(id);
 
-            return await (new PersistService()).order(orderModel);
+                return await (new PersistService()).order(orderModel);
+            });
         },
 
         async orderStatusUpdate(_, {id, status}, {ctx}) {
