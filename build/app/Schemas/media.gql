@@ -1,0 +1,51 @@
+type Media {
+    id: Int
+    type: String
+    src: String
+}
+
+input MediaInput {
+    type: String!
+    medias: [Upload]
+}
+
+type Query {
+    settingFindAll: Setting
+    settingFindOne(key: String!): String
+}
+
+type Mutation {
+    mediaUpdateOrCreate (data: MediaInput!): [Media]
+}
+
+# ===========================================================
+#     Media (Logo): Update Or Create With Postman
+# ===========================================================
+
+# operations: '{
+#     "query": "mutation($medias: [Upload]) { mediaUpdateOrCreate(data: {type: \"Product\", medias: $medias}) {id, type, type_id, src}}",
+#     "variables": {
+#         "medias": [null]
+#     }
+# }'
+
+# map: '{"0": ["variables.medias.0"]}'
+
+# 0: file
+
+# ===========================================================
+#     Media (Product): Update Or Create With Postman
+# ===========================================================
+
+# operations: '{
+#     "query": "mutation($medias: [Upload]) { mediaUpdateOrCreate(data: {type: \"Product\", medias: $medias}) {id, type, type_id, src}}",
+#     "variables": {
+#         "medias": [null, null]
+#     }
+# }'
+
+# map: '{"0": ["variables.medias.0"], "1": ["variables.medias.1"]}'
+
+# 0: file
+
+# 1: file

@@ -1,0 +1,106 @@
+type User {
+    id: Int
+    role_id: Int
+    store_id: Int
+    name: String
+    phone: String
+    email: String!
+    username: String
+    address: String
+    orders: [Order]
+    status: STATUS
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type UserInfo {
+    user: User
+    store: Store
+    category: ProductCategory
+    product: Product
+    isSetupDone: String
+}
+
+input UserInput {
+    role_id: Int
+    store_id: Int
+    name: String
+    phone: String
+    email: String!
+    username: String
+    password: String!
+    address: String
+}
+
+type Query {
+    userFindAll: [User]
+    userFindAllByRole(role_id: Int): [User]
+    userFindOne(id: Int): User
+    userFindOneByEmail(email: String!): User
+
+    userInfoFindAll: [UserInfo]
+}
+
+type Mutation {
+    userCreate (data: UserInput!): User
+}
+
+# ===========================================================
+#     User: Create
+# ===========================================================
+
+# mutation {
+#     userCreate(data: {
+#         name: "Mehediul Hassan Miton",
+#         phone: "01632587495",
+#         email: "mhmiton.dev@gmail.com",
+#         username: "mhmiton.dev",
+#         password: "123",
+#     }) {
+#         id
+#         role_id
+#         name
+#         phone
+#         email
+#         username
+#         status
+#         created_at
+#         updated_at
+#     }
+# }
+
+# ===========================================================
+#     User: Find All
+# ===========================================================
+
+# query {
+#     userFindAll {
+#         id
+#         role_id
+#         name
+#         phone
+#         email
+#         username
+#         status
+#         created_at
+#         updated_at
+#     }
+# }
+
+# ===========================================================
+#     User: Find One
+# ===========================================================
+
+# query {
+#     userFindOne(id: 1) {
+#         id
+#         role_id
+#         name
+#         phone
+#         email
+#         username
+#         status
+#         created_at
+#         updated_at
+#     }
+# }
